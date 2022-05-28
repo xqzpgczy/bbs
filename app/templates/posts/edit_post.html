@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block head %}
+{{ super() }}
+<script src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+
+{% endblock %}
+
+
+{% block page_content %}
+<div class="page-header">
+    <h1>你想说些什么?</h1>
+</div>
+
+
+    <form  method="POST"  enctype=“multipart/form-data>
+           {{ form.csrf_token }}
+            <div class="form-group">
+                {{form.title.label}}
+                {{form.title(placeholder="title", class_="form-control")}}
+            </div>
+            <div class="form-group">
+                {{form.description.label}}
+                {{form.description(placeholder="内容")}}
+            </div>
+            <div class="form-group">
+                {{form.tags.label}}
+                {{form.tags(placeholder="多个标签请用空格分开", class_="form-control")}}
+            </div>
+            <div class="form-group">
+                {{form.submit_button( class_="btn btn-default")}}
+            </div>
+
+
+    </form>
+
+{{ ckeditor.load() }}
+{{ ckeditor.config(name='description') }}
+
+
+
+{% endblock %}

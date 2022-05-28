@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+<style>
+a:hover
+{
+background-color:red;
+}
+</style>
+
+{% block page_content %}
+<div class="page-header">
+    {% include "posts/_post_header.html" %}
+</div>
+<div class="post-body">
+    {% if post.video %}
+    <div class="post-video">
+    {{ post.video | safe }}
+    </div>
+    {% endif %}
+    {% if post.slides %}
+    <div class="post-slides">
+    {{ post.slides | safe }}
+    </div>
+    {% endif %}
+</div>
+{% if comments %}
+<h3 id="comments">Comments</h3>
+{% include "posts/_comments.html" %}
+<ul class="pager">
+    {% if pagination.has_prev %}
+    <li class="previous"><a href="{{ url_for('posts.post', id=post.id, page=pagination.prev_num) }}#comments">&larr; Older</a></li>
+    {% else %}
+    <li class="previous disabled"><a href="#">&larr; Older</a></li>
+    {% endif %}
+    {% if pagination.has_next %}
+    <li class="next"><a href="{{ url_for('posts.post', id=post.id, page=pagination.next_num) }}#comments">Newer &rarr;</a></li>
+    {% else %}
+    <li class="next disabled"><a href="#">Newer &rarr;</a></li>
+    {% endif %}
+</ul>
+{% endif %}
+<h3 id="comment-form">Write a comment</h3>
+{{ wtf.quick_form(form, action='#comment-form') }}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ pagedown.include_pagedown() }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/autosize.js/1.18.1/jquery.autosize.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#flask-pagedown-body').autosize();
+    });
+$(".reply_comment").click(function(event) {
+{#    alert("lala"); todo: 应该先检查有没有已经打开的评论框,如果有,remove,#}
+    event.preventDefault();
+    var comment_body = $(event.target).closest(".comment-body");
+    comment_id = comment_body.attr("data-comment-id");
+{#    alert(comment_id);#}
+    $("input#reply_id").attr("value", comment_id);
+{#    $(".flask-pagedown-input").attr("reply-id", comment_id);#}
+    $('html, body').animate({
+            scrollTop: $("#body").offset().top
+        }, 500, function() {
+            $("#body").focus();
+        });
+
+{#    alert("tt");#}
+
+{#    var comment_box = $("body").find(".frm_add");#}
+{#    console.log(comment_box);#}
+{#    comment_box.remove();#}
+{##}
+{#    var comment_body = $(event.target).closest(".comment-body");#}
+{#    comment_id = comment_body.attr("data-comment-id");#}
+{#    url = "/comment/" + comment_id;#}
+{#    comment_body.append('<form class="frm_add"><textarea cols="10" rows="3" class="form-control comment-message" placeholder="Whats on your mind ?"></textarea>' +#}
+{#            '<div class="comment-action" style="height: 28px; position: relative;"> \#}
+{#        <button class="btn btn-default btn-cancel" style="right: 70px; position: absolute;" type="button">取消</button> \#}
+{#        <button class="btn btn-primary btn-comment" style="position: absolute; right: 0;" type="submit">评论</button> \#}
+{#    </div></form>');#}
+});
+
+
+$("body").on("submit", ".frm_add", function (event){
+
+    event.preventDefault();
+{#    alert("gaga");  注意, comment-message在一个页面只显示一个#}
+
+    var child_comments = $(event.target).parent().find(".child-comments");
+    var parent_comment_id = $(event.target).parent().attr("data-comment-id");
+    var input = $(".comment-message").val();
+{#    console.log(child_comments);#}
+    var current_url = window.location.pathname;
+    $(this).closest("form").remove();
+    child_comments.append('<p id="comment-form">' + input  + '</p>');
+
+   /* $.ajax function will go here to save row */
+   $.ajax({
+    url : current_url + "/reply_comment",
+    type: "POST",
+    data : {parent_id: parent_comment_id, content: input, reply_id: parent_comment_id},
+    success: function(data, textStatus, jqXHR)
+    {
+        console.log(data);
+    },
+    error: function (jqXHR, textStatus, errorThrown)
+    {
+
+    }
+});
+});
+
+$('.glyphicon-thumbs-up').click(function(event) {
+{#    event.preventDefault();#}
+
+    var comment_body = $(event.target).closest(".comment-body");
+    var target_id = comment_body.attr("data-comment-id");
+    var target_type = comment_body.attr("data-type");
+    var current_url = window.location.pathname;
+    $.ajax({
+    url : current_url + "/approve_comment",
+    type: "POST",
+    data : {target_id: target_id, target_type: target_type},
+    success: function(data, textStatus, jqXHR)
+    {
+        console.log(data);
+        if (data.rs == 1) {
+            var element = comment_body.find(".upvote-count");
+{#            console.log(element);#}
+            var approve_count = parseInt(element.text()) + 1;
+            element.text(approve_count);
+        }
+    },
+    error: function (jqXHR, textStatus, errorThrown)
+    {}
+    });
+});
+
+
+$('.glyphicon-heart').click(function(event) {
+
+{#    alert("ni");#}
+
+{#    var comment_body = $(event.target).closest(".comment-body");#}
+{#    var target_id = comment_body.attr("data-comment-id");#}
+{#    var target_type = comment_body.attr("data-type");#}
+{#    var current_url = window.location.pathname;#}
+{#    $.ajax({#}
+{#    url : current_url + "/approve",#}
+{#    type: "POST",#}
+{#    data : {target_id: target_id, target_type: target_type},#}
+{#    success: function(data, textStatus, jqXHR)#}
+{#    {#}
+{#        console.log(data);#}
+{#        if (data.rs == 1) {#}
+{#            var element = comment_body.find(".upvote-count");#}
+{#            var approve_count = parseInt(element.text()) + 1;#}
+{#            element.text(approve_count);#}
+{#        }#}
+{#    },#}
+{#    error: function (jqXHR, textStatus, errorThrown)#}
+{#    {}#}
+{#    });#}
+});
+
+</script>
+{% include "_api_client.html" %}
+{% endblock %}
