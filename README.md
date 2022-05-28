@@ -5,7 +5,12 @@
 
 ###使用说明
 
-1cd flask-demo
+克隆项目：
+
+git clone git@github.com:xqzpgczy/bbs.git
+
+
+1 cd flask-demo
 
 2 修改虚拟环境变量 文件 .env_bk 修改为 .env。    将其中的sql 换位你的sql
 DATABASE_URL=mysql+pymysql://root:625124155@127.0.0.1:3306/flask_demo
