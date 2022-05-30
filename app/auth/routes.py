@@ -24,6 +24,7 @@ def login():
         return redirect(request.args.get('next') or url_for('posts.index'))
     return render_template('auth/login.html', form=form)
 
+
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
     if not current_app.config['DEBUG'] and not current_app.config['TESTING'] \

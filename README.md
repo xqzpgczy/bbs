@@ -7,7 +7,8 @@
 
 克隆项目：
 
-git clone git@github.com:xqzpgczy/bbs.git
+
+git clone https://github.com/xqzpgczy/bbs.git
 
 
 1 cd flask-demo
@@ -21,14 +22,17 @@ DATABASE_URL=mysql+pymysql://root:625124155@127.0.0.1:3306/flask_demo
 
 
 
-3. pipenv shell  # 创建虚拟环境 环境要求 python3.5以上 。 
+
+4. 
+pip install pipenv  安装虚拟环境管理模块 
+pipenv shell  # 创建虚拟环境 环境要求 python3.5以上 。 
 如果环境不是python3.9 请修改 Pipfile 中的值为对应值 python_version = "3.9"
 
-4. pip install -r requirements.txt  安装依赖
+6. pip install -r requirements.txt  安装依赖
 
-5. flask run 
+7. flask run 
 
-6. 打开浏览器，在地址栏输入http://localhost:5000/
-7. 当前直接在网页注册用户。 不需要任何验证
+8. 打开浏览器，在地址栏输入http://localhost:5000/
+9. 当前直接在网页注册用户。 不需要任何验证
 
 
