@@ -26,7 +26,6 @@ def create_app(config_name):
     ckeditor = CKEditor()
     ckeditor.init_app(app)
 
-
     if not app.config['DEBUG'] and not app.config['TESTING']:
         # configure logging for production
 
